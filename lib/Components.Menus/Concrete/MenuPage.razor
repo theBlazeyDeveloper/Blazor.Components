@@ -1,0 +1,70 @@
+﻿
+@if (IsActive)
+{
+    <div @key="ButtonId" class="tab-pane active show" id="v-pills-@ButtonId" role="tabpanel" aria-labelledby="v-pills-@ButtonId-tab">
+        @ChildContent
+    </div>
+}
+
+@code {
+    string buttonId = string.Empty;
+    bool isActive;
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]public string ButtonId
+    {
+        get => buttonId;
+        set
+        {
+            buttonId = value ?? throw new ArgumentNullException("ButtonId must be given a value");
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    [Parameter] public EventCallback<MenuPage> OnSelected { get; set; }
+    [Parameter] public EventCallback<bool> OnRenderException { get; set; }
+    [CascadingParameter] VerticalMenuControl Parent { get; set; } = default!;
+
+    public bool IsActive
+    {
+        get => isActive;
+        protected set
+        {
+            isActive = value;            
+
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await Parent.AddPage(this);
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
+    internal void Activate()
+    {
+        try
+        {
+            IsActive = true;
+
+            if (Parent.AuthState is not null)
+                VerticalMenuStateProvider.SelectPage(Parent.AuthState.User, this);
+
+            if (OnSelected.HasDelegate)
+                OnSelected.InvokeAsync(this);
+        }
+        catch
+        {
+            throw;
+        }
+    }
+    internal void DeActivate() => IsActive = false;    
+}

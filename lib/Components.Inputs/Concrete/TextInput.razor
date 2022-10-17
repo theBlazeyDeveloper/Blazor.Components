@@ -1,0 +1,30 @@
+﻿@inherits TextInputBase<TValue>
+@typeparam TValue
+
+@if (!string.IsNullOrWhiteSpace(LabelValue))
+{
+    <div class="d-sm-none">
+        <label>@LabelValue</label>
+    </div>
+}
+
+<div class="inputBox">
+            
+    @if (Disabled)
+    {
+        <input type="text" class="@EditContext.FieldCssClass(() => CurrentValue)" @bind="@CurrentValue" placeholder=" " autocomplete="@AutoCompleteValue" disabled="@DisabledValue" />
+    }
+    else if (ReadOnly)
+    {
+        <input type="text" class="@EditContext.FieldCssClass(() => CurrentValue)" @bind="@CurrentValue" placeholder=" " autocomplete="@AutoCompleteValue" readonly="@ReadOnlyValue" />
+    }
+    else
+    {
+        <input type="text" @attributes="AdditionalAttributes" class="@EditContext.FieldCssClass(() => CurrentValue)" @bind="@CurrentValue" placeholder=" " autocomplete="@AutoCompleteValue" />
+    }    
+    @if (!string.IsNullOrWhiteSpace(LabelValue))
+    {
+        <span>@LabelValue</span>
+    }
+
+</div>

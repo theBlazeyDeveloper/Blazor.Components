@@ -1,0 +1,45 @@
+﻿@code {
+    /// <summary>
+    /// Text that button will display. Default is "Button"
+    /// </summary>
+    [Parameter] public string ButtonText { get; set; } = "Button";
+
+    /// <summary>
+    /// CSS classes for button. Default is "btn btn-outline-primary"
+    /// </summary>
+    [Parameter] public string CssClass { get; set; } = "btn btn-outline-primary";
+
+    /// <summary>
+    /// CSS classes for spinner color. Default is "text-white"
+    /// </summary>
+    [Parameter] public string SpinnerColorCssClass { get; set; } = "text-white";
+
+    /// <summary>
+    /// Displays a spinner icon when set to true. Default is false
+    /// </summary>
+    [Parameter] public bool SpinnerVisible { get; set; } = false;
+
+    /// <summary>
+    /// Disables the button when set to true. Default is false
+    /// </summary>
+    [Parameter] public bool Disabled { get; set; } = false;
+
+    /// <summary>
+    /// Callback that is invoked when button is clicked
+    /// </summary>
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    void HandleClick()
+    {
+        if (OnClick.HasDelegate)
+            OnClick.InvokeAsync(new EventArgs());
+    }
+}
+
+<button @onclick="HandleClick" class="@CssClass" disabled="@Disabled">
+    @if (SpinnerVisible)
+    {
+        <span class="@SpinnerColorCssClass spinner-border spinner-border-sm m-auto"></span>
+    }
+    @ButtonText
+</button>

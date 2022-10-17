@@ -1,0 +1,33 @@
+﻿@inherits ChartComponentBase<LineChartData>
+
+@if (Charts is not null)
+{
+    <RadzenChart>
+
+        @foreach (var item in Charts)
+        {
+            <RadzenLineSeries Smooth="@smooth"
+                      Data="@item.DataItems"
+                      CategoryProperty="@nameof(LineChartDataItem.Month)"
+                      ValueProperty="@nameof(LineChartDataItem.Count)"
+                      Title="@item.Title"
+                      LineType="@item.LineType">
+                <RadzenMarkers MarkerType="@item.MarkerType" />
+            </RadzenLineSeries>
+        }
+        <RadzenLegend Position="LegendPosition.Right" />
+        <RadzenCategoryAxis>
+            <RadzenAxisTitle Text="@XAxisLabel" />
+        </RadzenCategoryAxis>
+
+        <RadzenValueAxis>
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="@YAxisLabel" />
+        </RadzenValueAxis>
+
+    </RadzenChart>
+}
+
+@code {
+    bool smooth = true;
+}

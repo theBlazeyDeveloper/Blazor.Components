@@ -1,0 +1,29 @@
+﻿@inherits NumberInputBase<TValue>
+@typeparam TValue
+
+@if (!string.IsNullOrEmpty(LabelValue))
+{
+    <div class="d-sm-none">
+        <label>@LabelValue</label>
+    </div>
+}
+
+<div class="inputBox">
+       
+    @if (Disabled)
+    {
+        <input type="@InputType" class="@EditContext.FieldCssClass(() => CurrentValue)" @bind="@CurrentValue" @bind:event="oninput" placeholder=" " autocomplete="@AutoCompleteValue" disabled="@DisabledValue" />
+    }
+    else if (ReadOnly)
+    {
+        <input type="@InputType" class="@EditContext.FieldCssClass(() => CurrentValue)" @bind="@CurrentValue" @bind:event="oninput" placeholder=" " autocomplete="@AutoCompleteValue" readonly="@ReadOnlyValue" />
+    }
+    else
+    {
+        <input type="@InputType" class="@EditContext.FieldCssClass(() => CurrentValue)" @bind="@CurrentValue" @bind:event="oninput" placeholder=" " autocomplete="@AutoCompleteValue" />
+    }
+    @if (!string.IsNullOrWhiteSpace(LabelValue))
+    {
+        <span>@LabelValue</span>
+    }
+</div>

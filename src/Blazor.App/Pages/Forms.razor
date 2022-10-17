@@ -1,0 +1,89 @@
+﻿@page "/forms"
+
+<FormTemplate Model="_model" IsLoading="_model == null" IsFaulted="_isFaulted">
+    <LoadingContent>
+        <Loader Message="Loading Test Model..." />
+    </LoadingContent>
+    <FormContent Context="Model">
+
+        <HiddenInput @bind-Value="@Model.Id" />
+
+        <TextInput 
+            @bind-Value="Model.Name"
+            ClassCss="form-control"
+            ValidationFor="@(() => Model.Name)"
+            For="nameof(Model.Name)"
+            ModelType="Model.GetType()"
+            PrependLabel="true"
+            PlaceHolder="Enter name..." />
+
+        <SelectInput 
+            @bind-Value="Model.Color"
+            ClassCss="form-select" 
+            ValidationFor="@(() => Model.Color)"
+            ModelType="Model.GetType()" 
+            For="nameof(Model.Color)"
+            PrependLabel="true"
+            ColoredItems="true"
+            Items="Model.Colors" />
+
+        <div class="form-check">
+            <CheckBox @bind-Value="Model.IsDefault" For="nameof(Model.IsDefault)" Model="Model.GetType()" UseLabel="true" />
+        </div>
+
+    </FormContent>
+    <FaultedContent>
+
+    </FaultedContent>
+</FormTemplate>
+
+@code {
+    TestViewModel _model = default!;
+
+    bool _isFaulted;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _model = new();
+
+            await base.OnInitializedAsync();
+        }
+        catch
+        {
+            _isFaulted = true;
+        }
+    }
+
+    async Task SubmitForm()
+    {
+        await Task.Delay(1000);
+
+
+    }
+
+    sealed class TestViewModel
+    {
+        public TestViewModel()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
+        [Required]
+        public string Id { get; set; } = string.Empty;
+
+        [Required]
+        [Display(Name = "Name")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required]
+        [Display(Name = "Color")]
+        public string Color { get; set; } = string.Empty;
+
+        [Display(Name = "Is Default?")]
+        public bool IsDefault { get; set; }
+
+        public IEnumerable<SelectListItem> Colors = new SelectList(ColorEntity.Colors, "Id", "Name");
+    }
+}

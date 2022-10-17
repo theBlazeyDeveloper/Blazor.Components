@@ -1,0 +1,204 @@
+﻿@page "/"
+@using System.Runtime.CompilerServices;
+
+<PageTitle>Index</PageTitle>
+
+<ComponentLoader IsLoading="@_isLoading" IsFaulted="@_isFaulted">
+    <LoadingContent>
+        <h3>Loader Demo</h3>
+
+        <Loader Message="@_loadingMessage"
+                LoadingInterval="@_loadingInterval" />
+
+    </LoadingContent>
+    <Content>
+        <h3>Vertical Menu Demo</h3>
+
+        <VerticalMenuControl OnPageException="HandleError">
+            <MenuButtons>
+                <MenuButton ButtonId="test1" ButtonText="Test 1" />
+                <MenuButton ButtonId="test2" ButtonText="Test 2" />
+                <MenuButton ButtonId="lineChart" ButtonText="Line Chart" />
+                <MenuButton ButtonId="barChart" ButtonText="Bar Chart" />
+                <MenuButton ButtonId="error" ButtonText="Error Demo" />
+            </MenuButtons>
+            <MenuPages>
+                <MenuPage ButtonId="test1">
+                    Test 1 Content
+                </MenuPage>
+
+                <MenuPage ButtonId="test2">
+                    Test 2 Content
+                </MenuPage>
+
+                <MenuPage ButtonId="lineChart">
+                    @if (_lineData is not null && _lineData.Any())
+                    {
+                        <div class="row">
+                            <div class="col-12" id="lineChart">
+                                <div class="chart-wrapper">
+                                    <LineChart XAxisLabel="Months"
+                                           YAxisLabel="Count"
+                                           Charts="@_lineData"
+                                           Title="Test Line Chart" />
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </MenuPage>
+
+                <MenuPage ButtonId="barChart">
+                    @if (_barData is not null && _barData.Any())
+                    {
+                        <div class="row">
+                            <div class="col-12" id="barChart">
+                                <div class="chart-wrapper">
+
+                                    <BarChart XAxisLabel="Bars"
+                                          YAxisLabel="Count"
+                                          Charts="@_barData"
+                                          Title="Test Bar Chart" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </MenuPage>
+                <MenuPage ButtonId="error" OnSelected="@(() => HandleErrorSelected())">
+                    I throw Exceptions!
+                </MenuPage>
+            </MenuPages>
+        </VerticalMenuControl>
+    </Content>
+    <FaultedContent>
+        An Error occured
+    </FaultedContent>
+</ComponentLoader>
+
+@code {
+    const double _loadingInterval = 30000;
+    const string _loadingMessage = "Loading...";
+
+    const int Year2000 = 2000;
+    const int Year2002 = 2002;
+    const int Year2004 = 2004;
+
+    IEnumerable<BarChartData> _barData { get; set; } = new List<BarChartData>()
+    {
+        new BarChartData("Bar 1", LineType.Solid, new BarDataItem[]
+        {
+            new BarDataItem(){ Count = 1, Title = "One" },
+            new BarDataItem(){ Count = 20, Title = "Two" },
+            new BarDataItem(){ Count = 100, Title = "Three" },
+            new BarDataItem(){ Count = 18, Title = "Four" },
+            new BarDataItem(){ Count = 41, Title = "Five" }
+        }),
+        new BarChartData("Bar 2", LineType.Dashed, new BarDataItem[]
+        {
+            new BarDataItem(){ Count = 10, Title = "One" },
+            new BarDataItem(){ Count = 20, Title = "Two" },
+            new BarDataItem(){ Count = 100, Title = "Three" },
+            new BarDataItem(){ Count = 18, Title = "Four" },
+            new BarDataItem(){ Count = 41, Title = "Five" }
+        }),
+        new BarChartData("Bar 3", LineType.Dotted, new BarDataItem[]
+        {
+            new BarDataItem(){ Count = 20, Title = "One" },
+            new BarDataItem(){ Count = 20, Title = "Two" },
+            new BarDataItem(){ Count = 100, Title = "Three" },
+            new BarDataItem(){ Count = 18, Title = "Four" },
+            new BarDataItem(){ Count = 41, Title = "Five" }
+        }),
+        new BarChartData("Bar 4", LineType.Solid, new BarDataItem[]
+        {
+            new BarDataItem(){ Count = 30, Title = "One" },
+            new BarDataItem(){ Count = 20, Title = "Two" },
+            new BarDataItem(){ Count = 100, Title = "Three" },
+            new BarDataItem(){ Count = 18, Title = "Four" },
+            new BarDataItem(){ Count = 41, Title = "Five" }
+        }),
+    };
+
+    IEnumerable<LineChartData> _lineData { get; set; } = new List<LineChartData>()
+    {
+        new(Year2000, "Line 1", LineType.Solid, MarkerType.Circle, new LineChartDataItem[]
+        {
+            new LineChartDataItem(){ Count = 10, Month = "Jan", Year = Year2000 },
+            new LineChartDataItem(){ Count = 20, Month = "Feb", Year = Year2000 },
+            new LineChartDataItem(){ Count = 30, Month = "Mar", Year = Year2000 },
+            new LineChartDataItem(){ Count = 40, Month = "Apr", Year = Year2000 },
+            new LineChartDataItem(){ Count = 20, Month = "May", Year = Year2000 },
+            new LineChartDataItem(){ Count = 40, Month = "June", Year = Year2000 },
+            new LineChartDataItem(){ Count = 60, Month = "July", Year = Year2000 },
+            new LineChartDataItem(){ Count = 0, Month = "Aug", Year = Year2000 },
+            new LineChartDataItem(){ Count = 80, Month = "Sept", Year = Year2000 },
+            new LineChartDataItem(){ Count = 80, Month = "Oct", Year = Year2000 },
+            new LineChartDataItem(){ Count = 70, Month = "Nov", Year = Year2000 },
+            new LineChartDataItem(){ Count = 60, Month = "Dec", Year = Year2000 }
+        }),
+        new(Year2002, "Line 2", LineType.Dashed, MarkerType.Diamond, new LineChartDataItem[]
+        {
+            new LineChartDataItem(){ Count = 60, Month = "Jan", Year = Year2002 },
+            new LineChartDataItem(){ Count = 70, Month = "Feb", Year = Year2002 },
+            new LineChartDataItem(){ Count = 80, Month = "Mar", Year = Year2002 },
+            new LineChartDataItem(){ Count = 80, Month = "Apr", Year = Year2002 },
+            new LineChartDataItem(){ Count = 0, Month = "May", Year = Year2002 },
+            new LineChartDataItem(){ Count = 60, Month = "June", Year = Year2002 },
+            new LineChartDataItem(){ Count = 40, Month = "July", Year = Year2002 },
+            new LineChartDataItem(){ Count = 20, Month = "Aug", Year = Year2002 },
+            new LineChartDataItem(){ Count = 40, Month = "Sept", Year = Year2002 },
+            new LineChartDataItem(){ Count = 30, Month = "Oct", Year = Year2002 },
+            new LineChartDataItem(){ Count = 20, Month = "Nov", Year = Year2002 },
+            new LineChartDataItem(){ Count = 10, Month = "Dec", Year = Year2002 }
+        }),
+        new(Year2004, "Line 3", LineType.Dotted, MarkerType.Square, new LineChartDataItem[]
+        {
+            new LineChartDataItem(){ Count = 60, Month = "Jan", Year = Year2004 },
+            new LineChartDataItem(){ Count = 0, Month = "Feb", Year = Year2004 },
+            new LineChartDataItem(){ Count = 80, Month = "Mar", Year = Year2004 },
+            new LineChartDataItem(){ Count = 80, Month = "Apr", Year = Year2004 },
+            new LineChartDataItem(){ Count = 70, Month = "May", Year = Year2004 },
+            new LineChartDataItem(){ Count = 60, Month = "June", Year = Year2004 },
+            new LineChartDataItem(){ Count = 10, Month = "July", Year = Year2004 },
+            new LineChartDataItem(){ Count = 20, Month = "Aug", Year = Year2004 },
+            new LineChartDataItem(){ Count = 30, Month = "Sept", Year = Year2004 },
+            new LineChartDataItem(){ Count = 40, Month = "Oct", Year = Year2004 },
+            new LineChartDataItem(){ Count = 20, Month = "Nov", Year = Year2004 },
+            new LineChartDataItem(){ Count = 40, Month = "Dec", Year = Year2004 }
+        })
+    };
+
+    bool _isLoading = true;
+    bool _isFaulted;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await LoadSimulator();
+
+            await base.OnInitializedAsync();
+        }
+        catch
+        {
+            _isFaulted = true;
+        }
+    }
+
+    async Task LoadSimulator()
+    {
+        await Task.Delay(5000);
+
+        _isLoading = false;
+    }
+
+    void HandleErrorSelected([CallerMemberName] string propertyName = default!)
+    {
+        throw new ArgumentException(message: "Test Exception");
+    }
+
+    void HandleError((Exception ex, bool isFaulted) error)
+    {
+        _isFaulted = error.isFaulted;
+    }
+}

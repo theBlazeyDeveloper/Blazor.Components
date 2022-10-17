@@ -1,0 +1,34 @@
+﻿@inherits LoadingBase
+
+<div class="load-container">
+    <div class="loader">
+        <div class="loader-text">@Message</div>
+        <div class="loader-percent">
+            <div class="loader-progress"></div>            
+        </div>
+        <div class="loader-light"></div>
+    </div>    
+</div>
+
+@if (DisplayErrorMessage)
+{
+    <span class="error-text">@ErrorMessage</span>
+}
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        TimerService.Initialize(LoadingInterval);
+
+        TimerService.Start();
+
+        TimerService.OnElapsed += () =>
+        {
+            DisplayErrorMessage = true;
+            StateHasChanged();
+        };
+
+        await base.OnInitializedAsync();
+    }    
+}

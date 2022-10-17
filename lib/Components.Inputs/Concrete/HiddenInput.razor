@@ -1,0 +1,9 @@
+﻿@inherits HiddenInputBase<TValue>
+
+@typeparam TValue
+
+<input @attributes="AdditionalAttributes"
+       type="hidden"
+       class="@CssClass"
+       @bind="@CurrentValue"
+       @bind:event="oninput" />

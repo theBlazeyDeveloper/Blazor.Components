@@ -1,0 +1,28 @@
+﻿@inherits ChartComponentBase<BarChartData>
+
+@if (Charts is not null)
+{
+    <RadzenChart>
+        @foreach (var item in Charts)
+        {
+            <RadzenColumnSeries Data="@item.DataItems"
+                        CategoryProperty="@nameof(BarDataItem.Title)"
+                        ValueProperty="@nameof(BarDataItem.Count)"
+                        Fills="item.Colors"
+                        Title="@item.Title"
+                        LineType="@item.LineType">
+
+            </RadzenColumnSeries>
+        }
+        <RadzenLegend Position="LegendPosition.Right" />
+        <RadzenCategoryAxis>
+            <RadzenAxisTitle Text="@XAxisLabel" />
+        </RadzenCategoryAxis>
+
+        <RadzenValueAxis>
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="@YAxisLabel" />
+        </RadzenValueAxis>
+
+    </RadzenChart>
+}

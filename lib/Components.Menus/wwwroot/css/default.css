@@ -1,0 +1,10 @@
+﻿
+
+.nav-link {
+    color: #1D2835 !important; /*Dark Blue Grey 4*/
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #1D2835 !important; /*Dark Blue Grey 4*/
+    color: #FFBC4E !important; /*Marigold*/
+}

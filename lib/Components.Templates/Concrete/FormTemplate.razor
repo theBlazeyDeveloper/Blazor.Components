@@ -1,0 +1,59 @@
+﻿@typeparam TModel
+@inherits TemplateBase<TModel>
+
+@if (IsLoading)
+{
+    @LoadingContent
+}
+else
+{
+    if (Model is not null)
+    {
+        <div class="container-fluid">
+            <EditForm Model="Model" OnValidSubmit="ValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                @FormContent(Model)
+
+                <div class="btn-group pt-4">
+
+                    <button disabled="@DisableSubmitButton" type="submit" class="@SubmitButtonCss">@SubmitButtonText</button>
+
+                    @if (string.IsNullOrEmpty(BackUrl))
+                    {
+                        <button onclick="parent.history.back()" type="button" class="@ReturnButtonCss">@ReturnButtonText</button>
+                    }
+                    else
+                    {
+                        <button @onclick="HandleBackToList" type="button" class="@ReturnButtonCss">@ReturnButtonText</button>
+                    }
+                </div>
+            </EditForm>
+        </div>
+    }
+}
+
+@code {
+    [Parameter] public bool DisableSubmitButton { get; set; }
+
+    [Parameter] public RenderFragment<TModel> FormContent { get; set; } = default!;
+
+    [Parameter] public EventCallback ValidSubmit { get; set; }
+
+    [Parameter] public string? BackUrl { get; set; }
+
+    [Parameter] public bool SpinnerVisible { get; set; }
+
+    [Parameter] public string SubmitButtonText { get; set; } = "Sumbit";
+
+    [Parameter] public string ReturnButtonText { get; set; } = "Back";
+
+    [Parameter] public string SubmitButtonCss { get; set; } = "btn btn-outline-primary";
+
+    [Parameter] public string ReturnButtonCss { get; set; } = "btn btn-outline-danger";
+
+    [Inject] NavigationManager? _nav { get; set; }
+
+    void HandleBackToList() => _nav?.NavigateTo(BackUrl ?? "/");
+}

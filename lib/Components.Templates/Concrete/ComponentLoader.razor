@@ -1,0 +1,34 @@
+﻿@inherits TemplateBase
+
+@if (IsLoading)
+{
+    @LoadingContent
+}
+else
+{
+    if (IsFaulted)
+    {
+        <ErrorBoundary>
+            @FaultedContent
+
+            @if (ErrorMessages.Count > 0)
+            {
+                <ol>
+                    @foreach (var error in ErrorMessages)
+                    {
+                        <li>@error</li>
+                    }
+                </ol>
+            }
+        </ErrorBoundary>
+    }
+    @Content
+
+}
+
+@code {
+    /// <summary>
+    /// Content you want to display
+    /// </summary>
+    [Parameter] public virtual RenderFragment? Content { get; set; }
+}

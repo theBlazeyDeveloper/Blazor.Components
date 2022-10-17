@@ -1,0 +1,28 @@
+﻿@inherits CheckBoxBase
+
+@if (UseLabel)
+{
+    @if (ReadOnly)
+    {
+        <lable class="form-check-label">
+            <input @bind="CurrentValue" class="form-check-input @CssClass" type="checkbox" disabled="disabled" />@LabelValue
+        </lable>
+    }
+    else
+    {
+        <lable class="form-check-label">
+            <input @bind="CurrentValue" class="form-check-input @CssClass" type="checkbox" />@LabelValue
+        </lable>
+    }
+}
+else
+{
+    if (ReadOnly)
+    {
+        <input @bind="CurrentValue" class="form-check-input @CssClass" type="checkbox" disabled="disabled" />
+    }
+    else
+    {
+        <input @bind="CurrentValue" class="form-check-input @CssClass" type="checkbox" />
+    }
+}

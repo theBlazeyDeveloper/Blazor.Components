@@ -1,0 +1,41 @@
+﻿@inherits SelectInputBase<TValue>
+
+@typeparam TValue
+
+@if (!string.IsNullOrEmpty(LabelValue))
+{
+    <div class="d-sm-none">
+        <label>@LabelValue</label>
+    </div>
+}
+
+<div class="inputBox">
+    
+    <select @bind="@CurrentValue"
+            class="@EditContext.FieldCssClass(() => CurrentValue)"
+            @bind:event="onchange">
+
+        <option value="@string.Empty" selected="selected">Select Item</option>
+        @if (Items != null)
+        {
+            @foreach (var item in Items)
+            {
+                if (!ColoredItems)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+                else
+                {
+                    <option style="background-color:@item.Value" value="@item.Value">@item.Text</option>
+                }
+            }
+        }
+    </select>
+    @if (UseLabel)
+    {
+        @if (!string.IsNullOrEmpty(LabelValue))
+        {
+            <span>@LabelValue</span>
+        }
+    }
+</div>    

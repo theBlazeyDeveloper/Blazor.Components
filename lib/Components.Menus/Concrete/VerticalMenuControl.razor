@@ -1,0 +1,154 @@
+﻿<div>
+    <div class="row" style="margin-bottom: 30px;">
+
+        <div class="col-md-4">
+            <h3 class="align-self-start">@HeaderText</h3>
+        </div>
+
+        <div class="@HeaderClassCss" style="@HeaderStyle">
+            @if (HeaderContent != null)
+            {
+                @HeaderContent
+            }
+        </div>
+    </div>
+    <div class="row">
+
+        <CascadingValue Value="this">
+            <div class="col-md-2">
+
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+
+                    @MenuButtons
+
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="tab-content" id="v-pills-tabContent">
+
+                    @MenuPages
+
+                </div>
+            </div>
+        </CascadingValue>
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public string HeaderStyle { get; set; } = "text-align:right;";
+    [Parameter] public string HeaderClassCss { get; set; } = "col-md-8";
+    [Parameter] public string HeaderText { get; set; } = default!;
+
+    [Parameter] public EventCallback<(Exception ex, bool isFaulted)> OnPageException { get; set; }
+
+    [Parameter] public RenderFragment? HeaderContent { get; set; }
+    [Parameter] public RenderFragment? MenuButtons { get; set; }
+    [Parameter] public RenderFragment? MenuPages { get; set; }
+
+    [Inject] AuthenticationStateProvider? AuthProvider { get; set; }
+
+    internal ClaimsPrincipal CurrentUser { get; set; } = default!;
+    internal AuthenticationState? AuthState { get; set; }
+    public MenuPage? ActivePage { get; set; }
+    public MenuButton? ActiveButton { get; set; }
+    public IList<MenuPage> Pages { get; set; } = new List<MenuPage>();
+    public IList<MenuButton> Buttons { get; set; } = new List<MenuButton>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (AuthProvider != null)
+        {
+            AuthState = await AuthProvider.GetAuthenticationStateAsync();
+            CurrentUser = AuthState.User;
+        }
+        else
+            CurrentUser = new ClaimsPrincipal();
+
+        var currentState = VerticalMenuStateProvider.GetCurrentState(CurrentUser);
+
+        if (currentState is not null && currentState.HasValue)
+            await ActivatePage(currentState.Value.CurrentPage);
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    internal async Task AddButton(MenuButton button)
+    {
+        Buttons.Add(button);
+
+        if (Buttons.Count == 1 && button.IsVisible)
+        {
+            ActiveButton = button;
+            ActiveButton.Activate();
+        }
+        else        
+            button.DeActivate();        
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    internal async Task AddPage(MenuPage menuPage)
+    {
+        Pages.Add(menuPage);
+
+        var currentState = VerticalMenuStateProvider.GetCurrentState(CurrentUser);
+
+        if (Pages.Count == 1 && !currentState.HasValue)
+        {
+            ActivePage = menuPage;
+            ActivePage.Activate();
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task ActivatePage(string buttonId)
+    {
+        try
+        {
+            foreach (var item in Pages)
+                if (item.ButtonId.Equals(buttonId))
+                    item.Activate();
+                else
+                    item.DeActivate();
+
+            foreach (var item in Buttons)
+                if (item.ButtonId.Equals(buttonId))
+                    item.Activate();
+                else
+                    item.DeActivate();
+
+            await InvokeAsync(StateHasChanged);
+        }
+        catch(Exception ex)
+        {
+            if (OnPageException.HasDelegate)
+                await OnPageException.InvokeAsync((ex, true));
+        }
+    }
+    public async Task ActivatePage(MenuPage page)
+    {
+        try
+        {
+            foreach (var item in Pages)
+                if (item.ButtonId.Equals(page.ButtonId))
+                    item.Activate();
+                else
+                    item.DeActivate();
+
+            foreach (var item in Buttons)
+                if (item.ButtonId.Equals(page.ButtonId))
+                    item.Activate();
+                else
+                    item.DeActivate();
+
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            if (OnPageException.HasDelegate)
+                await OnPageException.InvokeAsync((ex, true));
+        }
+    }
+}

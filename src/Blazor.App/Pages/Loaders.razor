@@ -1,0 +1,16 @@
+﻿@page "/loaders"
+
+<Loader Message="@inputText"
+        LoadingInterval="@_loadingInterval" />
+
+<div style="padding-top:20px;">
+    <h3>Loading Text</h3>
+    <input @bind-value="@inputText" type="text" class="form-control" />
+</div>
+
+@code {
+    const double _loadingInterval = 30000;
+    const string _loadingMessage = "Loading Message to Test Length...";
+
+    string inputText = string.Empty;
+}
